@@ -8,7 +8,7 @@ static int8_t fc1_out[FC1_OUT];
 static int8_t relu_out[FC1_OUT];
 static int16_t buffer[1024];
 
-void run_inference(int8_t *input, int8_t *output)
+void run_inference(const volatile int8_t *input, volatile int8_t *output)
 {
     cmsis_nn_context ctx;
     ctx.buf = (void*)buffer;
@@ -37,7 +37,7 @@ void run_inference(int8_t *input, int8_t *output)
         &fc1_params,
         &fc1_quant,
         &input_dims,
-        input,
+        (const int8_t *)input,
         &fc1_w_dims,
         (const int8_t *)fc1_weights,
         &fc1_bias_dims,
@@ -78,6 +78,6 @@ void run_inference(int8_t *input, int8_t *output)
         &fc2_bias_dims,
         fc2_bias,
         &fc2_out_dims,
-        output
+        (int8_t *)output
     );
 }

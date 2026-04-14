@@ -5,6 +5,7 @@
 // Debug variables
 volatile int8_t debug_input[INPUT_SIZE];
 volatile int8_t debug_output[OUTPUT_SIZE];
+volatile int max_idx = 0;
 
 int main(void)
 {
@@ -17,10 +18,10 @@ int main(void)
         debug_input[i] = test_sample[i];
     }
 
-    run_inference((int8_t*)debug_input, (int8_t*)debug_output);
+    run_inference(debug_input, debug_output);
 
     // Find predicted digit
-    int max_idx = 0;
+    max_idx = 0;
     for (int i = 1; i < OUTPUT_SIZE; i++)
     {
         if (debug_output[i] > debug_output[max_idx])
@@ -30,8 +31,7 @@ int main(void)
     // Infinite loop for debugging
     while (1)
     {
-        // Check:
-        // debug_output[]
-        // max_idx
+        volatile int8_t keep = debug_output[max_idx];
+        (void)keep;
     }
 }
