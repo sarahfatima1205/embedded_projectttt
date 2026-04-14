@@ -1,5 +1,6 @@
 #include "stm32f4xx_hal.h"
 #include "model.h"
+#include "test_sample.h"
 
 // Debug variables
 volatile int8_t debug_input[INPUT_SIZE];
@@ -12,7 +13,8 @@ int main(void)
     // Example input (replace later with real MNIST sample)
     for (int i = 0; i < INPUT_SIZE; i++)
     {
-        debug_input[i] = (i % 2 == 0) ? 10 : -10;
+        //debug_input[i] = (i % 2 == 0) ? 10 : -10;
+        debug_input[i] = test_sample[i];
     }
 
     run_inference((int8_t*)debug_input, (int8_t*)debug_output);

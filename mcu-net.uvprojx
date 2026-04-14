@@ -404,6 +404,11 @@
               <FileType>5</FileType>
               <FilePath>.\model_weights.h</FilePath>
             </File>
+            <File>
+              <FileName>test_sample.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\test_sample.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

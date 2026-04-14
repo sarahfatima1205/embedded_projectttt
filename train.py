@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
+import numpy as np
 
 device = torch.device("cpu")
 
@@ -47,4 +48,25 @@ for epoch in range(5):
 
 # Save
 torch.save(model.state_dict(), "weights/model.pth")
+
+# Export first test sample as a C array for embedded testing
+model.eval()
+sample, label = test_dataset[0]
+
+# Quantize using same scale as input (normalize was (0.5, 0.5) so range is [-1, 1])
+# Map [-1,1] float → [-127,127] int8
+s_input = 127.0
+q_sample = (sample.view(-1) * s_input).round().clamp(-128, 127).numpy().astype(np.int8)
+
+with open("test_sample.h", "w") as f:
+    f.write("#ifndef TEST_SAMPLE_H\n#define TEST_SAMPLE_H\n\n")
+    f.write(f"// Label: {label}\n")
+    f.write(f"#define TEST_SAMPLE_LABEL {label}\n\n")
+    f.write(f"const int8_t test_sample[784] = {{\n")
+    for i in range(0, 784, 28):
+        f.write("  " + ",".join(map(str, q_sample[i:i+28])) + ",\n")
+    f.write("};\n\n#endif\n")
+
+print(f"Test sample exported — label is {label}")
+
 print("Training done + model saved")

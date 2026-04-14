@@ -17,7 +17,7 @@ fc1_b = model.fc1.bias.data
 fc2_w = model.fc2.weight.data
 fc2_b = model.fc2.bias.data
 
-# 🔥 AUTO dimensions
+# AUTO dimensions
 FC1_OUT, INPUT_SIZE = fc1_w.shape
 OUTPUT_SIZE, _ = fc2_w.shape
 
@@ -50,7 +50,13 @@ with open("model_weights.h", "w") as f:
     f.write(f"const int32_t fc2_bias[{OUTPUT_SIZE}] = {{")
     f.write(",".join(map(str, fc2_b_q)))
     f.write("};\n\n")
-
+    f.write(f"#define FC1_SCALE {1.0/s1:.10f}f\n")
+    f.write(f"#define FC2_SCALE {1.0/s2:.10f}f\n")
+    f.write(f"// Scale factors from quantization\n")
+    f.write(f"// FC1 weight scale: 1/{s1:.6f} per unit\n")
+    f.write(f"// FC2 weight scale: 1/{s2:.6f} per unit\n")
+    f.write(f"#define FC1_WEIGHT_SCALE {(1.0/s1):.10f}f\n")
+    f.write(f"#define FC2_WEIGHT_SCALE {(1.0/s2):.10f}f\n")
     f.write("#endif\n")
 
 print("Export DONE")
