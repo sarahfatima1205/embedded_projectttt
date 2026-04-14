@@ -8,10 +8,10 @@ model.load_state_dict(torch.load("weights/model.pth", map_location="cpu"))
 model.eval()
 
 def quantize(t):
-    max_val = t.abs().max()
+    max_val = t.abs().max().item()
     scale = 127.0 / max_val if max_val != 0 else 1.0
     q = (t * scale).round().clamp(-128, 127).to(torch.int8)
-    return q.numpy(), scale
+    return q.numpy(), float(scale)
 
 fc1_w = model.fc1.weight.data
 fc1_b = model.fc1.bias.data
@@ -30,7 +30,7 @@ fc2_b_q = (fc2_b * s2).round().to(torch.int32).numpy()
 
 # NOW compute quant params (s1, s2 are defined)
 def compute_cmsis_quant_params(input_scale, weight_scale, output_scale=1.0/127.0):
-    real_scale = (input_scale * weight_scale) / output_scale
+    real_scale = (float(input_scale) * float(weight_scale)) / float(output_scale)
     shift = 0
     multiplier = real_scale
     while multiplier < 0.5:
