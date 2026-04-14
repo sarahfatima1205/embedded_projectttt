@@ -1,0 +1,25 @@
+# Keil
+Objects/
+Listings/
+DebugConfig/
+*.axf
+*.map
+*.o
+*.d
+
+# RTE generated
+RTE/_Target_*
+
+# Python
+__pycache__/
+*.pyc
+
+# venv
+mcunet_env/
+
+# dataset + weights
+data/
+weights/model.pth
+
+# temp
+tempCodeRunnerFile.py
